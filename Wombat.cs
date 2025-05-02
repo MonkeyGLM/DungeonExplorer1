@@ -2,9 +2,9 @@ using System;
 
 namespace DungeonExplorer
 {
-    public class Rat : Monster
+    public class Wombat : Monster
     {
-        public Rat() : base("Rat", 30, 5) {}
+        public Wombat() : base("Wombat", 30, 2) {}
 
         public override void Attack(Player player)
         {

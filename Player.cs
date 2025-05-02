@@ -20,7 +20,18 @@ namespace DungeonExplorer
         }
         public string InventoryContents()
         {
-            return string.Join(", ", inventory.Items.Select(i => i.Name));
+            return string.Join(", ", inventory.Items.Select(i =>
+            {
+                if (i is Weapon w)
+                {
+                    return $"{w.Name} (Damage: {w.Damage})";
+                }
+                if (i is Potion p)
+                {
+                    return $"{p.Name} (Heals: {p.healAmount2})";
+                }
+                return i.Name;
+            }));
         }
 
         public override void TakeDamage(int amount)
@@ -66,6 +77,16 @@ namespace DungeonExplorer
             {
                 inventory.RemoveItem(item);
             }
+        }
+
+        public IEnumerable<Weapon> GetWeapons()
+        {   
+            return inventory.Items.OfType<Weapon>();
+        }
+
+        public IEnumerable<Potion> GetPotions()
+        {
+            return inventory.Items.OfType<Potion>();
         }
     }
 }

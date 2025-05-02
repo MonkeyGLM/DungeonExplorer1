@@ -1,6 +1,13 @@
 ﻿using System;
+using System.Linq;
+using System.ComponentModel;
+using System.Configuration.Assemblies;
 using System.Data;
 using System.Media;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
+using Microsoft.SqlServer.Server;
+using Microsoft.Win32;
 
 namespace DungeonExplorer
 {
@@ -8,37 +15,81 @@ namespace DungeonExplorer
     {
         private Player player;
         private Room currentRoom;
+        private GameMap gameMap;
 
         public Game()
         {
-            // Initialize the game with one room and one player
+            // Initialize the game with rooms and one player
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
-            player = new Player(name, 100);
-            Item newPotion = new Potion("Small Potion", 20);
-            Item sword = new Weapon("Sword", 10);
-            currentRoom = new Room("It is a cramped, musty room of moss-covered cobbled walls and a carpeted floor. There is a small potion on the floor. You hear a wombat hiss from the dark corner of the room.", newPotion, new Rat());
+            player = new Player(name, 100);            
         }
+
+
         public void Start()
         {
-            // Changed the playing logic into true and populated the while loop
             bool playing = true;
 
-            Console.WriteLine("Welcome", player);
+            Item RandomizeItem()
+            {
+                Random Rndi = new Random();
+                int rndItem = Rndi.Next(1, 11);
+                if (rndItem >= 1 && rndItem < 6)
+                {
+                    return new Potion("Small Potion", 20);  
+                }  
+                else if (rndItem >= 6 && rndItem < 9)
+                {
+                    return new Weapon("Sword", 10);
+                }
+                else
+                {
+                    return new Weapon("Big Potion", 50);
+                }
+            }
+
+            Monster RandomizeMonster()
+            {
+                Random RndM = new Random();
+                int rndMonster = RndM.Next(1,5);
+                if (rndMonster < 4)
+                {
+                    return new Ghoul();
+                }
+                else
+                {
+                    return new Wombat();
+                }
+            }
+
+            currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), RandomizeMonster());
+
+
+            Console.WriteLine($"Welcome, {player.Name}!");
             Console.WriteLine("You enter the dungeon.");
 
             while (playing)
             {
+                int kills = 0;
+                int rooms = 0;
+
+
                 // Code your playing logic here
                 Console.WriteLine(currentRoom.GetDescription());
                 
-                if (currentRoom.HasMonster())
+                while(currentRoom.HasMonster())
                 {
-                    Console.WriteLine($"A {currentRoom.Monster.Name} is here!");
+                    int currentTurn = 1;
+                    if (currentTurn == 1)
+                    {
+                        Console.WriteLine($"A {currentRoom.Monster.Name} has appeared from the darkness!");
+                    }
+                    
+                    Console.WriteLine($"The {currentRoom.Monster.Name} is on {currentRoom.Monster.Health} HP!");
                     Console.WriteLine("What will you do?");
                     Console.WriteLine($"- 1. Fight the {currentRoom.Monster.Name}");
                     Console.WriteLine("- 2. Use an item");
-                    Console.WriteLine("- 3. Beg for mercy");
+                    Console.WriteLine("- 3. Mercy");
 
                     int equippedBoost = 0;
 
@@ -48,9 +99,11 @@ namespace DungeonExplorer
                         int damage = 5 + equippedBoost; 
                         Console.WriteLine($"You attack the {currentRoom.Monster.Name}!");
                         currentRoom.Monster.TakeDamage(damage);
+                        Console.WriteLine($"The {currentRoom.Monster.Name} takes {damage} HP of damage!");
                         if (!currentRoom.Monster.IsAlive())
                         {
                             Console.WriteLine($"You defeated the {currentRoom.Monster.Name}!");
+                            kills = kills + 1;
                         }
                         else
                         {
@@ -76,7 +129,7 @@ namespace DungeonExplorer
 
                             if (item is Weapon inUseWeapon)
                             {
-                                Console.WriteLine($"You equip {inUseWeapon.Name}!");
+                                Console.WriteLine($"You equip {inUseWeapon.Name} to add {inUseWeapon.Damage} damage to your attack!");
                                 equippedBoost = inUseWeapon.Damage;
                                 
                             }
@@ -103,11 +156,11 @@ namespace DungeonExplorer
                         if (currentRoom.Monster.Name == "Wombat")
                         {
                             Console.WriteLine($"The {currentRoom.Monster.Name} didn't really want to fight anyway!");
-                        
+                                                    
                             currentRoom.Monster.TakeDamage(10000);
                             if (!currentRoom.Monster.IsAlive())
                             {
-                                Console.WriteLine($"You defeated the {currentRoom.Monster.Name}!");
+                                Console.WriteLine($"The {currentRoom.Monster.Name} ran off!");    
                             }
                         }
                         else
@@ -123,39 +176,87 @@ namespace DungeonExplorer
                             }
                         }
                     }
+                    currentTurn = currentTurn + 1;
+                }
+
+                if (playing == true)
+                {
+                    Console.WriteLine("What will you do?");
+                    Console.WriteLine("- 1. Search for an item");
+                    Console.WriteLine("- 2. Check status");
+                    Console.WriteLine("- 3. List items by type");
+                    Console.WriteLine("- 4. Move forward to the next room");
+                    Console.WriteLine("- 5. End the dungeon crawl");
+
+                    string input = Console.ReadLine();
+                    if (input == "1")
+                    {
+                        if (currentRoom.Item != null)
+                        {
+                            player.PickUpItem(currentRoom.Item);
+                            Console.WriteLine($"You picked up a {currentRoom.Item.Name}");
+                            currentRoom.RemoveItem();
+                        }
+                        else
+                        {
+                            Console.WriteLine("There is nothing to pick up.");
+                        }
+                    }
+
+                    if (input == "2")
+                    {
+                        Console.WriteLine($"Health: {player.Health}");
+                        Console.WriteLine("Inventory: " + player.InventoryContents());
+                    }
+
+                    if (input == "3")
+                    {
+                        var weapons = player.GetWeapons();
+                        var potions = player.GetPotions();
+
+                        Console.WriteLine("Weapons:");
+                        if (weapons.Any())
+                        {
+                            foreach (var x in weapons.OrderByDescending(x => x.Damage))
+                            {
+                                Console.WriteLine($"- {x.Name} (Damage: {x.Damage})");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You have no weapons.");
+                        }
+
+                        Console.WriteLine("\nPotions:");
+                        if (potions.Any())
+                        {
+                            foreach (var y in potions.OrderByDescending(y => y.healAmount2))
+                            {
+                                Console.WriteLine($"- {y.Name} (Damage: {y.healAmount2})");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("You have no potions.");
+                        }
                     
-                }
-                Console.WriteLine("What will you do?");
-                Console.WriteLine("- 1. Pick up the item");
-                Console.WriteLine("- 2. Check status");
-                Console.WriteLine("- 3. End the dungeon crawl");
-
-                string input = Console.ReadLine();
-                if (input == "1")
-                {
-                    if (currentRoom.Item != null)
-                    {
-                        player.PickUpItem(currentRoom.Item);
-                        Console.WriteLine("You picked up a "+ currentRoom.Item);
-                        currentRoom.RemoveItem();
                     }
-                    else
+                    
+                    
+                    if (input == "4")
                     {
-                        Console.WriteLine("There is nothing to pick up.");
+                        Console.WriteLine("You move into the next room...");
+                        rooms = rooms + 1;
+                        currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), RandomizeMonster());
                     }
-                }
-
-                if (input == "2")
-                {
-                    Console.WriteLine($"Health: {player.Health}");
-                    Console.WriteLine("Inventory: " + player.InventoryContents());
-                }
                 
-                if (input == "3")
-                {
-                    Console.WriteLine("Thanks for playing!");
-                    playing = false;
-                    break;
+                    if (input == "5")
+                    {
+                        Console.WriteLine($"You Killed {kills} enemies and explored {rooms} rooms!");
+                        Console.WriteLine("Thanks for playing!");
+                        playing = false;
+                        break;
+                    }
                 }
             }
         }

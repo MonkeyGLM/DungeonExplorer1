@@ -4,17 +4,17 @@ namespace DungeonExplorer
 {
     public class Potion : Item
     {
-        private int healAmount;
+        public int healAmount2 {get; private set; }
 
         public Potion(string name, int healAmount) : base(name)
         {
-            this.healAmount = healAmount;
+            healAmount2 = healAmount;
         }
 
         public override void Use(Player player)
         {
-            player.Heal(healAmount);
-            Console.WriteLine($"{player.Name} used {Name} and restored {healAmount} HP!");
+            player.Heal(healAmount2);
+            Console.WriteLine($"{player.Name} used {Name} and restored {healAmount2} HP!");
         }
     }
 }

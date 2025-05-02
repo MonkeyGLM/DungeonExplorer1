@@ -10,7 +10,7 @@
         {
             this.description = description;
             this.item = item;
-            this.Monster = Monster;
+            this.Monster = monster;
         }
 
         public string GetDescription()
