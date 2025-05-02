@@ -3,31 +3,28 @@
     public class Room
     {
         private string description;
-        private string item;
+        private Item item;
+        public Monster Monster { get; private set; }
 
-        public Room(string description, string item)
+        public Room(string description, Item item, Monster monster = null)
         {
             this.description = description;
             this.item = item;
+            this.Monster = Monster;
         }
 
         public string GetDescription()
         {
             return description;
         }
-        public string Item 
-        {
-            get { return item; } 
-        }
-
-        public void PickedUpItem()
-        {
-            item = null;
-        }
         
-        public void RemoveItem()
-        {
-            item = null;
-        }
+        public Item Item => item;
+
+        public void PickedUpItem() => item = null;
+        
+        public void RemoveItem() => item = null;
+
+        public bool HasMonster() => Monster != null && Monster.IsAlive();
+
     }
 }
