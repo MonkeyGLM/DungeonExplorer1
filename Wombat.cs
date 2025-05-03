@@ -4,7 +4,7 @@ namespace DungeonExplorer
 {
     public class Wombat : Monster
     {
-        public Wombat() : base("Wombat", 30, 2) {}
+        public Wombat() : base("Wombat", 30, 5) {}
 
         public override void Attack(Player player)
         {

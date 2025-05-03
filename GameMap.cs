@@ -23,5 +23,4 @@ namespace DungeonExplorer
             return rooms[Rnd.Next(rooms.Count)];
         }
     }
-    
 }

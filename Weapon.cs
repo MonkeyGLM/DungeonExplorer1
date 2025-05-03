@@ -13,7 +13,7 @@ namespace DungeonExplorer
 
         public override void Use(Player player)
         {
-            Console.WriteLine($"{Name} is the weapon of choice use. Choose a monster to attack.");
+            Console.WriteLine($"{Name} is the weapon of choice use.");
         }
     }
 }

@@ -24,11 +24,11 @@ namespace DungeonExplorer
             {
                 if (i is Weapon w)
                 {
-                    return $"{w.Name} (Damage: {w.Damage})";
+                    return $"{w.Name} (Damage: +{w.Damage})";
                 }
                 if (i is Potion p)
                 {
-                    return $"{p.Name} (Heals: {p.healAmount2})";
+                    return $"{p.Name} (Heals {p.healAmount2} HP)";
                 }
                 return i.Name;
             }));
@@ -50,8 +50,22 @@ namespace DungeonExplorer
             var item = inventory.GetItem(itemName);
             if (item != null)
             {
-                item.Use(this);
-                inventory.RemoveItem(item);
+                if (item is Potion)
+                {
+                    if (Health != 100)
+                    {
+                        item.Use(this);
+                        inventory.RemoveItem(item);
+                    }
+                    else
+                    {
+                        Console.WriteLine("You are already on full health!");
+                    }
+                }
+                else
+                {
+                    inventory.RemoveItem(item);
+                }
             }
             else
             {
@@ -62,6 +76,10 @@ namespace DungeonExplorer
         public void Heal(int amount)
         {
             Health += amount;
+            if (Health > 100)
+            {
+                Health = 100;
+            }
             Console.WriteLine($"{Name} healed for {amount}. Current Health: {Health}");
         }
 

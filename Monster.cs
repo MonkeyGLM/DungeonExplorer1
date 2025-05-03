@@ -24,7 +24,6 @@ namespace DungeonExplorer
 
         public virtual void Attack(Player player)
         {
-            Console.WriteLine($"{Name} attacks {player.Name} for {AttackPower} damage.");
             player.TakeDamage(AttackPower);
         }
     }

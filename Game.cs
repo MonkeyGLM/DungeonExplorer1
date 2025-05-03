@@ -22,9 +22,9 @@ namespace DungeonExplorer
             // Initialize the game with rooms and one player
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
-            player = new Player(name, 100);            
+            player = new Player(name, 100);
+            gameMap = new GameMap();            
         }
-
 
         public void Start()
         {
@@ -34,27 +34,36 @@ namespace DungeonExplorer
             {
                 Random Rndi = new Random();
                 int rndItem = Rndi.Next(1, 11);
-                if (rndItem >= 1 && rndItem < 6)
+                if (rndItem <= 3)
                 {
-                    return new Potion("Small Potion", 20);  
+                    return null;
                 }  
-                else if (rndItem >= 6 && rndItem < 9)
+                else if (rndItem <= 7)
+                {
+                    return new Potion("Small Potion", 30);
+                }
+                else if (rndItem < 9)
                 {
                     return new Weapon("Sword", 10);
                 }
                 else
                 {
-                    return new Weapon("Big Potion", 50);
+                    return new Potion("Big Potion", 60);
                 }
             }
 
             Monster RandomizeMonster()
             {
                 Random RndM = new Random();
-                int rndMonster = RndM.Next(1,5);
-                if (rndMonster < 4)
+                int rndMonster = RndM.Next(1,11);
+
+                if (rndMonster <= 6)
                 {
                     return new Ghoul();
+                }
+                else if (rndMonster == 7)
+                {
+                    return null;
                 }
                 else
                 {
@@ -62,36 +71,33 @@ namespace DungeonExplorer
                 }
             }
 
-            currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), RandomizeMonster());
+            currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), null);
 
 
             Console.WriteLine($"Welcome, {player.Name}!");
             Console.WriteLine("You enter the dungeon.");
-
+            int equippedBoost = 0;
+            int kills = 0;
+            int rooms = 0;
             while (playing)
             {
-                int kills = 0;
-                int rooms = 0;
-
-
+                
                 // Code your playing logic here
                 Console.WriteLine(currentRoom.GetDescription());
-                
+                int currentTurn = 1;
                 while(currentRoom.HasMonster())
                 {
-                    int currentTurn = 1;
                     if (currentTurn == 1)
                     {
                         Console.WriteLine($"A {currentRoom.Monster.Name} has appeared from the darkness!");
                     }
                     
                     Console.WriteLine($"The {currentRoom.Monster.Name} is on {currentRoom.Monster.Health} HP!");
+                    Console.WriteLine($"You are on {player.Health} HP!");
                     Console.WriteLine("What will you do?");
                     Console.WriteLine($"- 1. Fight the {currentRoom.Monster.Name}");
                     Console.WriteLine("- 2. Use an item");
                     Console.WriteLine("- 3. Mercy");
-
-                    int equippedBoost = 0;
 
                     string checkinput = Console.ReadLine();
                     if (checkinput == "1")
@@ -129,9 +135,10 @@ namespace DungeonExplorer
 
                             if (item is Weapon inUseWeapon)
                             {
+                                equippedBoost = 0;
                                 Console.WriteLine($"You equip {inUseWeapon.Name} to add {inUseWeapon.Damage} damage to your attack!");
                                 equippedBoost = inUseWeapon.Damage;
-                                
+                                player.UseItem(itemName);
                             }
                             else
                             {
