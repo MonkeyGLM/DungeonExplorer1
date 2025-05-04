@@ -8,7 +8,7 @@ namespace DungeonExplorer
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args)                             //Main(), starts game
         {
             Game game = new Game();
             GameTests.RunAllTests();

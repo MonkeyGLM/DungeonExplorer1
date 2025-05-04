@@ -2,11 +2,11 @@ using System;
 
 namespace DungeonExplorer
 {
-    public class Wombat : Monster
+    public class Wombat : Monster                       //inherits monster
     {
-        public Wombat() : base("Wombat", 30, 5) {}
+        public Wombat() : base("Wombat", 30, 5) {}      //creates a wombat
 
-        public override void Attack(Player player)
+        public override void Attack(Player player)      //wombat's attack
         {
             Console.WriteLine($"{Name} attacks {player.Name} with a flurry of bites!");
             Random Rnd = new Random();

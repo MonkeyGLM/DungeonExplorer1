@@ -8,17 +8,17 @@ namespace DungeonExplorer
         private List<Item> items = new List<Item>();
         public IEnumerable<Item> Items => items;
 
-        public void AddItem(Item item)
+        public void AddItem(Item item)                          //adds an item
         {
             items.Add(item);
         }
 
-        public Item GetItem(string name)
+        public Item GetItem(string name)                        //gets an item
         {
             return items.FirstOrDefault(i => i.Name == name);
         }
 
-        public void RemoveItem(Item item)
+        public void RemoveItem(Item item)                       //removes an item
         {
             items.Remove(item);
         }

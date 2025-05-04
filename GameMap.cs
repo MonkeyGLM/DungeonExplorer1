@@ -5,7 +5,7 @@ namespace DungeonExplorer
 {
     public class GameMap
     {
-        private List<string> rooms = new List<string>
+        private List<string> rooms = new List<string>               //list of descriptions for rooms
         {
             "It is a cramped, musty room of moss-covered cobbled walls and a carpeted floor.",
             "It is a damp, narrow hallway covered in cobwebs and moss.",
@@ -17,7 +17,7 @@ namespace DungeonExplorer
             "It is a vast, domed room split by roots of a colossal tree, its gnarled trunk piercing through stone."
         };
 
-        public string GetRoom()
+        public string GetRoom()                                     //randomise rooms description
         {
             Random Rnd = new Random();
             return rooms[Rnd.Next(rooms.Count)];

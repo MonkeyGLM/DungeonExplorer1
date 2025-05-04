@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DungeonExplorer
 {
-    public abstract class Creature
+    public abstract class Creature                              //base class for creatures
     {
         public string Name { get; protected set; }
         public int Health { get; protected set; }

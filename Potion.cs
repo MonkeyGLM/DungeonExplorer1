@@ -2,7 +2,7 @@ using System;
 
 namespace DungeonExplorer
 {
-    public class Potion : Item
+    public class Potion : Item                                      //inherits item
     {
         public int healAmount2 {get; private set; }
 
@@ -11,7 +11,7 @@ namespace DungeonExplorer
             healAmount2 = healAmount;
         }
 
-        public override void Use(Player player)
+        public override void Use(Player player)                     //heals the player
         {
             player.Heal(healAmount2);
             Console.WriteLine($"{player.Name} used {Name} and restored {healAmount2} HP!");

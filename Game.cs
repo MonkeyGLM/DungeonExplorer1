@@ -30,7 +30,7 @@ namespace DungeonExplorer
         {
             bool playing = true;
 
-            Item RandomizeItem()
+            Item RandomizeItem()                                       //picks a random item
             {
                 Random Rndi = new Random();
                 int rndItem = Rndi.Next(1, 11);
@@ -52,7 +52,7 @@ namespace DungeonExplorer
                 }
             }
 
-            Monster RandomizeMonster()
+            Monster RandomizeMonster()                                  //picks a random monster
             {
                 Random RndM = new Random();
                 int rndMonster = RndM.Next(1,11);
@@ -71,7 +71,7 @@ namespace DungeonExplorer
                 }
             }
 
-            currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), null);
+            currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), null);           //makes the first room, guaranteed no monster
 
 
             Console.WriteLine($"Welcome, {player.Name}!");
@@ -79,15 +79,15 @@ namespace DungeonExplorer
             int equippedBoost = 0;
             int kills = 0;
             int rooms = 0;
-            while (playing)
+            while (playing)                                                             //playing logic
             {
                 
                 // Code your playing logic here
-                Console.WriteLine(currentRoom.GetDescription());
+                Console.WriteLine(currentRoom.GetDescription());                        //writes the description
                 int currentTurn = 1;
                 while(currentRoom.HasMonster())
                 {
-                    if (currentTurn == 1)
+                    if (currentTurn == 1)                                               //text when monster appears
                     {
                         Console.WriteLine($"A {currentRoom.Monster.Name} has appeared from the darkness!");
                     }
@@ -99,8 +99,8 @@ namespace DungeonExplorer
                     Console.WriteLine("- 2. Use an item");
                     Console.WriteLine("- 3. Mercy");
 
-                    string checkinput = Console.ReadLine();
-                    if (checkinput == "1")
+                    string checkinput = Console.ReadLine();                             //checks for input
+                    if (checkinput == "1")                                              //attack and counter attack
                     {   
                         int damage = 5 + equippedBoost; 
                         Console.WriteLine($"You attack the {currentRoom.Monster.Name}!");
@@ -122,7 +122,7 @@ namespace DungeonExplorer
                             }
                         }
                     }
-                    else if (checkinput == "2")
+                    else if (checkinput == "2")                                         //opens the inventory to use an item
                     {
                         var inventoryContents = player.InventoryContents();
 
@@ -133,7 +133,7 @@ namespace DungeonExplorer
                             string itemName = Console.ReadLine();
                             var item = player.GetItemByName(itemName);
 
-                            if (item is Weapon inUseWeapon)
+                            if (item is Weapon inUseWeapon)                             //checks if item is weapon
                             {
                                 equippedBoost = 0;
                                 Console.WriteLine($"You equip {inUseWeapon.Name} to add {inUseWeapon.Damage} damage to your attack!");
@@ -158,7 +158,7 @@ namespace DungeonExplorer
                             break;
                         }
                     }
-                    else if (checkinput == "3")
+                    else if (checkinput == "3")                              //if its a wombat, you can peace option because why not
                     {
                         if (currentRoom.Monster.Name == "Wombat")
                         {
@@ -186,7 +186,7 @@ namespace DungeonExplorer
                     currentTurn = currentTurn + 1;
                 }
 
-                if (playing == true)
+                if (playing == true)                                       //if you die to a monster, skips the room search
                 {
                     Console.WriteLine("What will you do?");
                     Console.WriteLine("- 1. Search for an item");
@@ -196,7 +196,7 @@ namespace DungeonExplorer
                     Console.WriteLine("- 5. End the dungeon crawl");
 
                     string input = Console.ReadLine();
-                    if (input == "1")
+                    if (input == "1")                                       //search for item
                     {
                         if (currentRoom.Item != null)
                         {
@@ -210,13 +210,13 @@ namespace DungeonExplorer
                         }
                     }
 
-                    if (input == "2")
+                    if (input == "2")                                       //checks status
                     {
                         Console.WriteLine($"Health: {player.Health}");
                         Console.WriteLine("Inventory: " + player.InventoryContents());
                     }
 
-                    if (input == "3")
+                    if (input == "3")                                       //lists item by type, sorted by potency
                     {
                         var weapons = player.GetWeapons();
                         var potions = player.GetPotions();
@@ -250,14 +250,14 @@ namespace DungeonExplorer
                     }
                     
                     
-                    if (input == "4")
+                    if (input == "4")                                       //creates the next room and moves on
                     {
                         Console.WriteLine("You move into the next room...");
                         rooms = rooms + 1;
                         currentRoom = new Room(gameMap.GetRoom(), RandomizeItem(), RandomizeMonster());
                     }
                 
-                    if (input == "5")
+                    if (input == "5")                                       //quits the game
                     {
                         Console.WriteLine($"You Killed {kills} enemies and explored {rooms} rooms!");
                         Console.WriteLine("Thanks for playing!");

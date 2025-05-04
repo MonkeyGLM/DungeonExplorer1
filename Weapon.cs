@@ -2,7 +2,7 @@ using System;
 
 namespace DungeonExplorer
 {
-    public class Weapon : Item
+    public class Weapon : Item                                  //inherits item, base weapon class
     {
         public int Damage { get; private set; }
 

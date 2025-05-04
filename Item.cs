@@ -5,7 +5,7 @@ namespace DungeonExplorer
     {
         void Use(Player player);
     }
-    public abstract class Item : ICollectible
+    public abstract class Item : ICollectible               //bass class for item
     {
         public string Name { get; protected set; }
 

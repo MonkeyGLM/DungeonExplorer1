@@ -10,21 +10,21 @@ namespace DungeonExplorer
     {
         private Inventory inventory;
 
-        public Player(string name, int health) : base(name, health) 
+        public Player(string name, int health) : base(name, health)
         {
             inventory = new Inventory();
         }
-        public void PickUpItem(Item item)
+        public void PickUpItem(Item item)                       //adds an item to the inventory
         {
             inventory.AddItem(item);
         }
-        public string InventoryContents()
+        public string InventoryContents()                       //returns each item in the inventory and their value
         {
             return string.Join(", ", inventory.Items.Select(i =>
             {
                 if (i is Weapon w)
                 {
-                    return $"{w.Name} (Damage: +{w.Damage})";
+                    return $"{w.Name} (Damage: +{w.Damage})"
                 }
                 if (i is Potion p)
                 {
@@ -34,18 +34,18 @@ namespace DungeonExplorer
             }));
         }
 
-        public override void TakeDamage(int amount)
+        public override void TakeDamage(int amount)             //taking away health when damaged
         {
             Health -= amount;
             if (Health < 0) Health = 0;
         }
 
-        public override bool IsAlive()
+        public override bool IsAlive()                          //check if the player is alive
         {
             return Health > 0;
         }
 
-        public void UseItem(string itemName)
+        public void UseItem(string itemName)                    //uses an item from the inventory
         {
             var item = inventory.GetItem(itemName);
             if (item != null)
@@ -73,22 +73,22 @@ namespace DungeonExplorer
             }
         }
 
-        public void Heal(int amount)
+        public void Heal(int amount)                            //heals the player for the strength of the potion
         {
             Health += amount;
-            if (Health > 100)
+            if (Health > 100)                                   //prevents healing over 100 hp
             {
                 Health = 100;
             }
             Console.WriteLine($"{Name} healed for {amount}. Current Health: {Health}");
         }
 
-        public Item GetItemByName(string name)
+        public Item GetItemByName(string name)                  //gets an item by the name searched
         {
             return inventory.GetItem(name);
         }
 
-        public void RemoveItem(string name)
+        public void RemoveItem(string name)                     //removes an item from the inventory
         {
             var item = inventory.GetItem(name);
             if (item != null)
@@ -97,12 +97,12 @@ namespace DungeonExplorer
             }
         }
 
-        public IEnumerable<Weapon> GetWeapons()
+        public IEnumerable<Weapon> GetWeapons()                 //returns only the weapons in the inventory
         {   
             return inventory.Items.OfType<Weapon>();
         }
 
-        public IEnumerable<Potion> GetPotions()
+        public IEnumerable<Potion> GetPotions()                 //returns only the potions in the inventory
         {
             return inventory.Items.OfType<Potion>();
         }

@@ -7,7 +7,7 @@ namespace DungeonExplorer
     {
         private static string logPath = "test_log.txt";
 
-        public static void RunAllTests()
+        public static void RunAllTests()                                            //runs all the below tests
         {
             using (StreamWriter log = new StreamWriter(logPath, false))
             {
@@ -22,10 +22,10 @@ namespace DungeonExplorer
                 log.WriteLine(" - Tests Complete - ");
             }
 
-            Console.WriteLine("Tests complete. Results saved to test_log.txt.");
+            Console.WriteLine("Tests complete. Results saved to test_log.txt.");    
         }
 
-        private static void TestPlayerHealing(StreamWriter log)
+        private static void TestPlayerHealing(StreamWriter log)                     //tests heal
         {
             var player = new Player("Test Player", 50);
             player.Heal(30);
@@ -33,7 +33,7 @@ namespace DungeonExplorer
             log.WriteLine($"TestPlayerHealing: {result} (Expected 80, Got {player.Health})");
         }
 
-        private static void TestItemPickupAndRemoval(StreamWriter log)
+        private static void TestItemPickupAndRemoval(StreamWriter log)              //tests item pickup
         {
             var player = new Player("Test Player", 100);
             var sword = new Weapon("Test Sword", 10);
@@ -45,7 +45,7 @@ namespace DungeonExplorer
             log.WriteLine($"TestItemRemoval: {(removed ? "PASS" : "FAIL")}");
         }
 
-        private static void TestMonsterDamage(StreamWriter log)
+        private static void TestMonsterDamage(StreamWriter log)                     //tests damaging monster
         {
             var monster = new Ghoul();
             monster.TakeDamage(5);
@@ -53,7 +53,7 @@ namespace DungeonExplorer
             log.WriteLine($"TestMonsterDamage: {result} (Expected 5, Got {monster.Health})");
         }
 
-        private static void TestPotionUse(StreamWriter log)
+        private static void TestPotionUse(StreamWriter log)                         //tests using potion
         {
             var player = new Player("Test Player", 70);
             var potion = new Potion("Healing Potion", 20);
@@ -62,7 +62,7 @@ namespace DungeonExplorer
             log.WriteLine($"TestPotionUse: {result} (Expected 90, Got {player.Health})");
         }
 
-        private static void TestWeaponUseOutput(StreamWriter log)
+        private static void TestWeaponUseOutput(StreamWriter log)                   //tests using weapon
         {
             var weapon = new Weapon("Debug Sword", 15);
             Console.SetOut(log);
